@@ -1,0 +1,42 @@
+<h1>FA DATA LIST</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Serial No.</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Line</th>
+      <th>Model</th>
+      <th>Qty</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @fas.each_with_index do |fa, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= fa.date&.strftime('%Y-%m-%d') %></td>
+        <td><%= fa.time&.strftime('%H:%M:%S') %></td>
+        <td><%= fa.Line %></td>
+        <td><%= fa.Model %></td>
+        <td><%= fa.qty %></td>
+        <td><%= link_to "Show", fa_path(fa) %></td>
+        <td><%= button_to "Delete", fa, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="pagination">
+  <%= will_paginate @fas %>
+</div>
+
+<p><%= link_to "<<Home", new_fa_path %></p>
+
+<style>
+  /* Custom CSS to center content in table cells */
+  tbody td {
+    text-align: center;
+    padding: 10px;
+  }
+</style>

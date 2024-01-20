@@ -1,0 +1,41 @@
+<% if flash.now[:alert] %>
+  <div class="alert alert-danger">
+    <%= flash.now[:alert] %>
+  </div>
+<% end %>
+
+<h1 class="mb-4">FA Data Entry</h1>
+
+
+<%= form_with(model: @fa, class: 'mb-4') do |form| %>
+  <div class="form-group">
+    <%= form.label :Line, class: 'mb-1' %>
+    <%= form.collection_select(:Line, Fa::LINES, :to_s, :humanize, { prompt: 'Select Line' }, class: 'form-control') %>
+  </div>
+  
+  <div class="form-group">
+    <%= form.label :Model, class: 'mb-1' %>
+    <%= form.collection_select(:Model, Fa::MODELS, :to_s, :humanize, { prompt: 'Select Model' }, class: 'form-control') %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :qty, class: 'mb-1' %>
+    <%= form.text_field :qty, class: 'form-control', pattern: '\d+' %>
+  </div>
+
+  <%= form.submit 'Submit', class: 'btn btn-primary' %>
+<% end %>
+
+<script>
+  $(document).on('keydown', '.barcode-input', function (e) {
+    if (e.keyCode === 13) { // Check if Enter key is pressed
+      var currentRow = $(this).closest('tr');
+      var nextRow = currentRow.next('tr');
+      
+      if (nextRow.length > 0) {
+        var nextBarcodeInput = nextRow.find('.barcode-input');
+        nextBarcodeInput.focus();
+      }
+    }
+  });
+</script>
