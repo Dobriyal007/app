@@ -1,31 +1,28 @@
-<% if flash.now[:alert] %>
-  <div class="alert alert-danger">
-    <%= flash.now[:alert] %>
+<div class="back-bg d-flex align-items-center justify-content-center">
+  <div class="login-inner">
+    <h2 class="fw-bold text-center border-bottom pb-3 mb-3">FA Data Entry</h2>
+    <%= form_with(model: @fa) do |form| %>
+      <div class="mb-2">
+        <% if flash.now[:alert] %>
+          <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <%= flash.now[:alert] %>
+          </div>
+        <% end %>
+      </div>
+      <div class="mb-2">
+        <%= form.label :Line, class: 'form-label' %>
+        <%= form.collection_select(:Line, Fa::LINES, :to_s, :humanize, { prompt: 'Select Line' }, class: 'form-control') %>
+      </div>
+      <div class="mb-2">
+        <%= form.label :Model, class: 'form-label' %>
+        <%= form.collection_select(:Model, Fa::MODELS, :to_s, :upcase, { prompt: 'Select Model' }, class: 'form-control') %>
+      </div>
+      <div class="mb-2">
+        <%= form.label :qty, class: 'form-label' %>
+        <%= form.text_field :qty, class: 'form-control', pattern: '\d+', placeholder: 'Enter quantity (Max: 20)' %>
+      </div>
+      <%= form.submit 'Submit', class: 'btn btn-primary w-100' %>
+    <% end %>
   </div>
-<% end %>
+</div>
 
-<h1 class="mb-4">FA Data Entry</h1>
-
-
-<%= form_with(model: @fa, class: 'mb-4') do |form| %>
-  <div class="form-group">
-    <%= form.label :Line, class: 'mb-1' %>
-    <%= form.collection_select(:Line, Fa::LINES, :to_s, :humanize, { prompt: 'Select Line' }, class: 'form-control') %>
-  </div>
-  
-  <div class="form-group">
-    <%= form.label :Model, class: 'mb-1' %>
-    <%= form.collection_select(:Model, Fa::MODELS, :to_s, :upcase, { prompt: 'Select Model' }, class: 'form-control') %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :qty, class: 'mb-1' %>
-    <%= form.text_field :qty, class: 'form-control', pattern: '\d+', placeholder: 'Enter quantity (Max: 20)' %>
-    <small class="text-muted">Maximum quantity is 20.</small>
-  </div>
-
-  <div style="text-align: center;">
-    <%= form.submit 'Submit', class: 'btn btn-primary' %>
-  </div>
-
-<% end %>

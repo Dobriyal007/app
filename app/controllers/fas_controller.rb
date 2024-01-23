@@ -1,7 +1,7 @@
 class FasController < ApplicationController
 
   def index
-  	@fas = Fa.paginate(page: params[:page], per_page: 6)
+  	@fas = Fa.paginate(page: params[:page], per_page: 8)
   end
 
   def show

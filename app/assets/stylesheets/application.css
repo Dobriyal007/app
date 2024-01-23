@@ -1,5 +1,5 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
+
+/* This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
  * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
@@ -15,88 +15,133 @@
  */
 
 @import 'bootstrap';
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
  
-body {
-  background: #106eea;
-  color: white;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  line-height: 1.6;
-  margin: 20px auto;
-  width: 90%;
-  max-width: 700px;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+html {
+  scroll-behavior: smooth;
 }
 
-h1 {
-  color: #f8f9fa; /* Bootstrap's light color */
-  font-size: 24px;
-  margin-bottom: 20px;
+*,
+p,
+a,
+ul,
+li,
+ol,
+pre,
+span,
+body,
+table,
+figure {
+  margin: 0;
+  padding: 0;
 }
 
-.form-group {
-  margin-bottom: 20px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+a,
+a:hover,
+a:focus,
+span {
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+ul,
+li,
+ol {
+  list-style-type: none;
+}
+
+input:focus,
+select:focus,
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+	border-color: #eaeaea;
+}
+
+input:-internal-autofill-selected {
+  background: #FFFFFF;
+}
+
+select.form-control {
+	background: url("https://cdn-icons-png.flaticon.com/128/2985/2985150.png") no-repeat scroll right 10px center / 18px;
 }
 
 label {
-  display: block;
-  font-weight: bold;
+	font-weight: bold;
 }
 
-.input-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.input-group-addon {
-  background-color: #343a40; /* Bootstrap's dark color */
-  border: 1px solid #343a40;
-  color: #f8f9fa; /* Bootstrap's light color */
-  padding: 10px;
-}
-
-.form-control {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-  border: 1px solid #ced4da; /* Bootstrap's default border color */
-  border-radius: 5px;
-}
-
-.btn-primary {
-  background-color: #007bff; /* Bootstrap's primary color */
-  border: 1px solid #007bff;
-  color: #f8f9fa; /* Bootstrap's light color */
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 5px;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
   cursor: pointer;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3; /* Bootstrap's primary darkened color */
-  border: 1px solid #0056b3;
+::-webkit-scrollbar-track {
+  background: var(--secondary_hover_color);
 }
 
-a {
-  color: #efaaca;
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: var(--primary_color);
+}
+
+body {
+  color: #111111;
+  font-size: 14px;
+  line-height: 1.5;
+  min-width: 360px;
+  overflow-x: hidden;
+  background: #a5a5a5;
+	font-family: 'Open Sans', sans-serif !important;
+}
+
+.back-bg {
+	padding: 20px;
+	overflow-y: auto;
+	background: url("https://images.unsplash.com/photo-1547190027-9156686aa2f0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D") no-repeat scroll center center / cover;
+	min-height: 100vh;
+  max-height: 100%;
+}
+
+.login-inner {
+	width: 100%;
+	padding: 30px;
+	max-width: 460px;
+	border-radius: 20px;
+	background: #ffffff;
+	border: 1px solid #f5f5f5;
+}
+
+.basic-head {
+	color: #ffffff;
+	border-radius: 10px;
+}
+
+.pagination span, .pagination em, .pagination a {
+	padding: 6px 10px;
+  min-width: 38px;
+  text-align: center;
   text-decoration: none;
+  font-style: normal;
+  border-radius: 30px;
+  border: 1px solid #eaeaea;
+  margin: 0 5px;
+  color: #111111;
 }
 
-.form-group {
-  margin-bottom: 20px;
-}
-
-.btn-primary {
-  background-color: #3498db;
-  border-color: #3498db;
-}
-
-.btn-primary:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
+.pagination span:hover, .pagination em.current, .pagination a:hover {
+	color: #ffffff;
+  background: #0d6efd;
 }
