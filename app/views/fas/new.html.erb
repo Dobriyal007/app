@@ -15,27 +15,17 @@
   
   <div class="form-group">
     <%= form.label :Model, class: 'mb-1' %>
-    <%= form.collection_select(:Model, Fa::MODELS, :to_s, :humanize, { prompt: 'Select Model' }, class: 'form-control') %>
+    <%= form.collection_select(:Model, Fa::MODELS, :to_s, :upcase, { prompt: 'Select Model' }, class: 'form-control') %>
   </div>
 
   <div class="form-group">
     <%= form.label :qty, class: 'mb-1' %>
-    <%= form.text_field :qty, class: 'form-control', pattern: '\d+' %>
+    <%= form.text_field :qty, class: 'form-control', pattern: '\d+', placeholder: 'Enter quantity (Max: 20)' %>
+    <small class="text-muted">Maximum quantity is 20.</small>
   </div>
 
-  <%= form.submit 'Submit', class: 'btn btn-primary' %>
-<% end %>
+  <div style="text-align: center;">
+    <%= form.submit 'Submit', class: 'btn btn-primary' %>
+  </div>
 
-<script>
-  $(document).on('keydown', '.barcode-input', function (e) {
-    if (e.keyCode === 13) { // Check if Enter key is pressed
-      var currentRow = $(this).closest('tr');
-      var nextRow = currentRow.next('tr');
-      
-      if (nextRow.length > 0) {
-        var nextBarcodeInput = nextRow.find('.barcode-input');
-        nextBarcodeInput.focus();
-      }
-    }
-  });
-</script>
+<% end %>

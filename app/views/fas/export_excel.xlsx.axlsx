@@ -1,15 +1,16 @@
 wb = xlsx_package.workbook
+binding.pry
 wb.add_worksheet(name: 'Fas Data') do |sheet|
   sheet.add_row ['Serial No.', 'Date', 'Time', 'Line', 'Model', 'Barcode']
 
-  @fas.each_with_index do |fa, index|
+  @fa.barcodes.each_with_index do |barcode, index|
     sheet.add_row [
       index + 1,
-      fa.date&.strftime('%Y-%m-%d'),
-      fa.time&.strftime('%H:%M:%S'),
-      fa.Line,
-      fa.Model,
-      '', # You may need to modify this part based on how you handle barcodes
+      @fa.date&.strftime('%Y-%m-%d'),
+      @fa.time&.strftime('%H:%M:%S'),
+      barcode.fa.Line,
+      barcode.fa.Model,
+      barcode.value
     ]
   end
 end

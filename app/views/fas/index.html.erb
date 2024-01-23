@@ -3,12 +3,13 @@
 <table>
   <thead>
     <tr>
-      <th>Serial No.</th>
+      <th>Sr. No.</th>
       <th>Date</th>
       <th>Time</th>
       <th>Line</th>
       <th>Model</th>
       <th>Qty</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -20,8 +21,9 @@
         <td><%= fa.Line %></td>
         <td><%= fa.Model %></td>
         <td><%= fa.qty %></td>
-        <td><%= link_to "Show", fa_path(fa) %></td>
+        <td><%#= link_to "Show", fa_path(fa) %></td>
         <td><%= button_to "Delete", fa, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+        <td><%= link_to 'View Barcodes', barcodes_fa_path(fa) %></td>
       </tr>
     <% end %>
   </tbody>
@@ -37,6 +39,6 @@
   /* Custom CSS to center content in table cells */
   tbody td {
     text-align: center;
-    padding: 10px;
+    padding: 12px;
   }
 </style>

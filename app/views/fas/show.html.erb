@@ -1,21 +1,20 @@
 <!-- app/views/fas/show.html.erb -->
-
 <h1>Barcode Details</h1>
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped">
     <thead class="thead-dark">
       <tr>
-        <th>Serial No.</th>
+        <th>Sr No.</th>
         <th>Date</th>
         <th>Time</th>
         <th>Line</th>
         <th>Model</th>
-        <th>Barcode</th>
+        <th>Barcode<br><small class="text-muted">After scan press tab button.</small></th>
       </tr>
     </thead>
     <tbody>
-      <%= form_tag submit_barcode_data_fa_path(@fa), method: :post do %>
+      <%= form_with(model: @fa, url: submit_barcode_data_fas_path(@fa), method: :post, data: { turbo: false}) do |form| %>
         <% @fa.qty.times do |serial_number| %>
           <tr>
             <td><%= serial_number + 1 %></td>
@@ -23,11 +22,13 @@
             <td><%= @fa.time&.strftime('%H:%M:%S') %></td>
             <td><%= @fa.Line %></td>
             <td><%= @fa.Model %></td>
-            <td><%= text_field_tag "barcodes[][value]", nil, class: "form-control", placeholder: "Enter Barcode" %></td>
+            <td><%= form.text_field "barcodes[][value]", class: "form-control", placeholder: "Enter Barcode" %></td>
           </tr>
         <% end %>
         <tr>
-          <td colspan="6"><%= submit_tag 'Submit', class: 'submit' %></td>
+          <td colspan="6" class="text-center">
+            <%= form.submit "Submit", class: "btn btn-primary" %>
+          </td>
         </tr>
       <% end %>
     </tbody>
@@ -35,11 +36,9 @@
 </div>
 
 <p>
-  <%= link_to "<< Back", new_fa_path, style: "color: white;", class: "btn btn-secondary", style: "margin-right: 500px" %>
-  <%= link_to "Go to List >>", root_path, style: "color: white;", class: "btn btn-secondary" %>
+  <%= link_to "<< Back", new_fa_path, class: "btn btn-secondary", style: "margin-right: 500px" %>
+  <%= link_to "Go to List >>", root_path, class: "btn btn-secondary", style: "color: white;" %>
 </p>
-
-<%= link_to 'Export to Excel', export_excel_fas_path(format: 'xlsx'), class: 'btn btn-success' %>
 
 <style>
   /* Custom CSS to center content in table cells */
@@ -47,16 +46,5 @@
     text-align: center;
     padding: 8px;
   }
-  .submit {
-    background-color: #007bff;
-    border: 1px solid #007bff;
-    color: #f8f9fa;
-    /* padding: 10px 20px; */
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    /* font-size: 16px; */
-    border-radius: 5px;
-    cursor: pointer;
-  }
+  
 </style>

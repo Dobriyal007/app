@@ -1,5 +1,5 @@
 class Barcode < ApplicationRecord
 	belongs_to :fa
 	
-	validates :barcode, presence: true, length: { maximum: 40 }
+	validates :value, presence: true, length: { maximum: 40 }, numericality: { only_integer: true }
 end

@@ -1,30 +1,12 @@
 class FasController < ApplicationController
-  # before_action :set_fa, only: [:show, :export_excel]
-  # before_action :set_fa, only: [:show, :destroy]
-  # before_action :set_fas, only: [:index]
-
 
   def index
-  	@fas = Fa.paginate(page: params[:page], per_page: 10)
+  	@fas = Fa.paginate(page: params[:page], per_page: 6)
   end
 
   def show
-  	if params[:id] == 'index'
-      redirect_to action: 'index'
-    else
-      @fa = Fa.find(params[:id])
-    end
+  	@fa = Fa.find(params[:id])
   end
-
-
-	# def show
-	#   @fa = Fa.find(params[:id])
-
-	#   respond_to do |format|
-	#     format.turbo_stream { render turbo_stream: turbo_stream.replace(@fa) }
-	#     format.html { render :show }
-	#   end
-	# end
 
   def new
   	@fa = Fa.new
@@ -35,19 +17,51 @@ class FasController < ApplicationController
     if @fa.save
       redirect_to @fa, notice: 'Data was successfully saved.'
     else
-      flash.now[:alert] = 'Data is not filled completely.'
+      flash.now[:alert] = 'Data is not complete or correct.'
       render "new"
     end
   end
 
-   def export_excel
-    respond_to do |format|
-      format.xlsx {
-        @fas = Fa.all
-        render xlsx: 'export_excel', filename: "fas_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
-      }
-    end
-  end
+  # def export_excel
+  # 	binding.pry
+  #   respond_to do |format|
+  #     format.xlsx {
+  #     	@fa = Fa.find(params[:id]
+  #     	@barcode = @fa.barcodes
+  #       # @barcode =  Barcode.find_by("fa_id")
+  #       render xlsx: 'export_excel', filename: "fas_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
+  #     }
+  #   end
+  # end
+
+  def export_excel
+	  binding.pry
+	  respond_to do |format|
+	    format.xlsx {
+	      barcode = @fa.barcodes
+	      xlsx_package = Axlsx::Package.new
+	      wb = xlsx_package.workbook
+
+	      wb.add_worksheet(name: 'Fas Data') do |sheet|
+	        sheet.add_row ['Serial No.', 'Date', 'Time', 'Line', 'Model', 'Barcode']
+
+	        barcode.each_with_index do |barcode, index|
+	          sheet.add_row [
+	            index + 1,
+	            @fa.date&.strftime('%Y-%m-%d'),
+	            @fa.time&.strftime('%H:%M:%S'),
+	            barcode.fa.Line,
+	            barcode.fa.Model,
+	            barcode.value
+	          ]
+	        end
+	      end
+
+	      render xlsx: 'export_excel', filename: "fas_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
+	    }
+	  end
+	end
+
 
   def destroy
 	  @fa = Fa.find(params[:id])
@@ -55,55 +69,68 @@ class FasController < ApplicationController
 	  redirect_to @fa, notice: 'Data was successfully destroyed.'
 	end
 
-	def submit_barcode_data
-		binding.pry
-	  @fa = Fa.find(params[:fa_id])
-	  # Assuming the form sends barcode data in the params
-	  barcode_params = params[:barcodes]
-
-	  # Save barcode data to the database
-	  barcode_params.each do |barcode_data|
-	    @fa.barcodes.create(value: barcode_data[:value])
-	  end
-	  redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-	end
-
-	def barcodes
-    @fa = Fa.find(params[:id])
-    @barcodes = @fa.barcodes
-  end
-
-
-  # def submit_barcode_data
-  #   # Assuming the form sends barcode data in the params
-  #   barcode_params = params[:barcodes]
-  #   # Save barcode data to the database
-  #   barcode_params.each do |barcode_data|
-  #     @fa.barcodes.create(
-  #       value: barcode_data[:value],
-  #     )
-  #   end
-  #   redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-  # end
-
- #  def submit_barcode_data
- #  	binding.pry
+	# def submit_barcode_data
+	# 	binding.pry
+	#   @fa = Fa.find(params[:id])
 	#   # Assuming the form sends barcode data in the params
 	#   barcode_params = params[:barcodes]
-	  
-	#   # Log the parameters for debugging
-	#   Rails.logger.debug "Barcode Params: #{barcode_params.inspect}"
+	#   # barcode_values = params[:barcodes].map { |barcode| barcode[:value] }
+	#   barcode_values.each do |value|
+	# 	  @fa.barcodes.create(value: value)
+	# 	end
 
-	#   # Save barcode data to the database if present
-	#   if barcode_params.present?
-	#     barcode_params.each do |barcode_data|
-	#       @fa.barcodes.create(value: barcode_data[:value])
-	#     end
-	#     redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-	#   else
-	#     redirect_to barcodes_fa_path(@fa), alert: 'No barcode data submitted.'
+	#   # Save barcode data to the database
+	#   barcode_params.each do |barcode_data|
+	#     @fa.barcodes.create(value: barcode_data[:value])
 	#   end
+	#   redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
 	# end
+
+  def submit_barcode_data
+	  @fa = Fa.find(params[:format])
+	  
+	  barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
+	  # Check if all barcode values are present
+    all_values_present = barcode_values.all?(&:present?)
+	  
+	  if all_values_present
+	    # Build Barcode objects associated with @fa
+	    barcode_values.each do |value|
+	      @fa.barcodes.build(value: value)
+	    end
+
+	    # Save the @fa instance and all associated Barcode objects to the database
+	    if @fa.save
+	      redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
+	    else
+	      flash.now[:alert] = 'Failed to save barcode data.'
+	      render 'show'
+	    end
+	  else
+	    flash.now[:alert] = 'Please provide values for all barcodes.'
+	    render 'show'
+	  end
+	end
+  
+ #  def submit_barcode_data
+ #  	binding.pry
+	#   @fa = Fa.find(params[:id])
+
+	#   # Assuming the form sends barcode data in the params
+	#   barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
+
+	#   # Save barcode data to the database
+	  # barcode_values.each do |value|
+	  #   @fa.barcodes.build(value: value)
+	  # end
+	#   redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
+	# end
+
+
+	def barcodes
+	  @fa = Fa.find(params[:id])
+	  @barcodes = @fa.barcodes
+	end
 
 
 private

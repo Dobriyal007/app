@@ -1,0 +1,18 @@
+# app/views/fas/export_barcodes_excel.xlsx.axlsx
+
+Axlsx::Package.new do |p|
+  p.workbook.add_worksheet(name: 'Barcodes') do |sheet|
+    sheet.add_row ['Sr No.', 'Date', 'Time', 'Line', 'Model', 'Barcode']
+
+    @fa.barcodes.each_with_index do |barcode, index|
+      sheet.add_row [
+        index + 1,
+        @fa.date&.strftime('%Y-%m-%d'),
+        @fa.time&.strftime('%H:%M:%S'),
+        barcode.fa.Line,
+        barcode.fa.Model,
+        barcode.value
+      ]
+    end
+  end
+end

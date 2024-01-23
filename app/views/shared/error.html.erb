@@ -1,0 +1,18 @@
+<!-- app/views/shared/error.html.erb -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Error</title>
+  <!-- Add your stylesheets and other head elements as needed -->
+</head>
+<body>
+
+  <div class="error-container">
+    <h1>Error</h1>
+    <p><%= @error_message %></p>
+    <%= link_to 'Home', root_path, class: 'btn btn-primary' %>
+  </div>
+
+</body>
+</html>

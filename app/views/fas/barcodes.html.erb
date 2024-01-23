@@ -5,18 +5,40 @@
 <table>
   <thead>
     <tr>
-      <th>Serial No.</th>
-      <th>Code</th>
+      <th>Sr No.</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Line</th>
+      <th>Model</th>
+      <th>Barcode</th>
     </tr>
   </thead>
   <tbody>
     <% @fa.barcodes.each_with_index do |barcode, index| %>
       <tr>
         <td><%= index + 1 %></td>
+        <td><%= @fa.date&.strftime('%Y-%m-%d') %></td>
+        <td><%= @fa.time&.strftime('%H:%M:%S') %></td>
+        <td><%= barcode.fa.Line %></td>
+        <td><%= barcode.fa.Model %></td>
         <td><%= barcode.value %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= link_to '<< Back to FA', fas_path %>
+<p>
+  <%= link_to '<< Back to FA', fas_path, style: "color: white;", class: "btn btn-secondary", style: "margin-right: 500px; color: white" %>
+  <%= link_to "Go to List >>", root_path, class: "btn btn-secondary", style: "color: white;" %>
+</p>
+<%= link_to 'Export to Excel', export_excel_fas_path(format: 'xlsx'), class: 'btn btn-success' %>
+<%#= link_to 'Export Barcodes to Excel', export_barcodes_excel_fas_path(format: 'xlsx'), class: 'btn btn-success' %>
+<p><%= link_to "<<Home", new_fa_path %></p>
+
+<style>
+  /* Custom CSS to center content in table cells */
+  tbody td {
+    text-align: center;
+    padding: 10px;
+  }
+</style>
