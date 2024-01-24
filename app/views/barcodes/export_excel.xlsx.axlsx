@@ -1,5 +1,3 @@
-# app/views/fas/export_barcodes_excel.xlsx.axlsx
-
 Axlsx::Package.new do |p|
   p.workbook.add_worksheet(name: 'Barcodes') do |sheet|
     sheet.add_row ['Sr No.', 'Date', 'Time', 'Line', 'Model', 'Barcode']

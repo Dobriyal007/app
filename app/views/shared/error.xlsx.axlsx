@@ -1,0 +1,5 @@
+# shared/error.xlsx.axlsx
+wb = xlsx_package.workbook
+wb.add_worksheet(name: 'Error') do |sheet|
+  sheet.add_row ['Error', @error_message]
+end

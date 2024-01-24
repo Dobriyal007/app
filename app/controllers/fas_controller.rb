@@ -22,69 +22,24 @@ class FasController < ApplicationController
     end
   end
 
-  # def export_excel
-  # 	binding.pry
-  #   respond_to do |format|
-  #     format.xlsx {
-  #     	@fa = Fa.find(params[:id]
-  #     	@barcode = @fa.barcodes
-  #       # @barcode =  Barcode.find_by("fa_id")
-  #       render xlsx: 'export_excel', filename: "fas_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
-  #     }
-  #   end
-  # end
-
   def export_excel
-	  binding.pry
+	  # Find the Fa object using params[:id]
+	  @fa = Fa.find(params[:id])
 	  respond_to do |format|
 	    format.xlsx {
-	      barcode = @fa.barcodes
-	      xlsx_package = Axlsx::Package.new
-	      wb = xlsx_package.workbook
-
-	      wb.add_worksheet(name: 'Fas Data') do |sheet|
-	        sheet.add_row ['Serial No.', 'Date', 'Time', 'Line', 'Model', 'Barcode']
-
-	        barcode.each_with_index do |barcode, index|
-	          sheet.add_row [
-	            index + 1,
-	            @fa.date&.strftime('%Y-%m-%d'),
-	            @fa.time&.strftime('%H:%M:%S'),
-	            barcode.fa.Line,
-	            barcode.fa.Model,
-	            barcode.value
-	          ]
-	        end
-	      end
-
+	      # Now that @fa is assigned, you can access its barcodes
+	      @barcode = @fa.barcodes
+	      # Proceed with building and rendering the Excel file
 	      render xlsx: 'export_excel', filename: "fas_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
 	    }
 	  end
 	end
-
 
   def destroy
 	  @fa = Fa.find(params[:id])
 	  @fa.destroy
 	  redirect_to @fa, notice: 'Data was successfully destroyed.'
 	end
-
-	# def submit_barcode_data
-	# 	binding.pry
-	#   @fa = Fa.find(params[:id])
-	#   # Assuming the form sends barcode data in the params
-	#   barcode_params = params[:barcodes]
-	#   # barcode_values = params[:barcodes].map { |barcode| barcode[:value] }
-	#   barcode_values.each do |value|
-	# 	  @fa.barcodes.create(value: value)
-	# 	end
-
-	#   # Save barcode data to the database
-	#   barcode_params.each do |barcode_data|
-	#     @fa.barcodes.create(value: barcode_data[:value])
-	#   end
-	#   redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-	# end
 
   def submit_barcode_data
 	  @fa = Fa.find(params[:format])
@@ -101,7 +56,10 @@ class FasController < ApplicationController
 
 	    # Save the @fa instance and all associated Barcode objects to the database
 	    if @fa.save
-	      redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
+	    	flash[:notice] = 'Barcode data submitted successfully.'
+	    	# render 'submitted_data'
+	      redirect_to  submitted_data_fa_path(@fa), notice: 'Barcode data submitted successfully.'
+	      # redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
 	    else
 	      flash.now[:alert] = 'Failed to save barcode data.'
 	      render 'show'
@@ -111,40 +69,30 @@ class FasController < ApplicationController
 	    render 'show'
 	  end
 	end
-  
- #  def submit_barcode_data
- #  	binding.pry
-	#   @fa = Fa.find(params[:id])
-
-	#   # Assuming the form sends barcode data in the params
-	#   barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
-
-	#   # Save barcode data to the database
-	  # barcode_values.each do |value|
-	  #   @fa.barcodes.build(value: value)
-	  # end
-	#   redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-	# end
-
 
 	def barcodes
 	  @fa = Fa.find(params[:id])
 	  @barcodes = @fa.barcodes
 	end
 
+	def submitted_data
+    @submitted_fas = Fa.includes(:barcodes).all
+  end
+
+  def search
+    @barcode = Barcode.find_by(value: params[:barcode])
+    if @barcode
+      @fa = @barcode.fa
+    else
+      flash.now[:alert] = "Barcode not found."
+    end
+    render 'search'
+  end
+
 
 private
-
-  def set_fa
-    @fa = Fa.find(params[:id])
-  end
-
-  def set_fas
-    @fas = Fa.all
-  end
 
   def fa_params
     params.require(:fa).permit(:Line, :Model, :qty)
   end
-
 end

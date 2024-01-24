@@ -17,11 +17,7 @@ class BarcodesController < ApplicationController
   end
 
   private
-
-  def set_fa
-    @fa = Fa.find(params[:fa_id])
-  end
-
+  
   def barcode_params
     params.require(:barcode).permit(:value)
   end

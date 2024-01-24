@@ -1,5 +1,4 @@
 wb = xlsx_package.workbook
-binding.pry
 wb.add_worksheet(name: 'Fas Data') do |sheet|
   sheet.add_row ['Serial No.', 'Date', 'Time', 'Line', 'Model', 'Barcode']
 

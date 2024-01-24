@@ -1,0 +1,23 @@
+<!-- app/views/fas/search.html.erb -->
+<div class="container mt-4">
+  <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Barcode</h2>
+  
+  <%= form_tag(search_fas_path, method: :get, class: "form-inline justify-content-center mb-3") do %>
+    <div class="form-group">
+      <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2", placeholder: "Enter Barcode" %>
+    </div>
+    <div class="text-center">
+    	<%= submit_tag "Search", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <% if @fa %>
+    <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Result</h2>
+    <!-- Display FA details and associated barcode data here -->
+    <%= render 'fas/show', fa: @fa %>
+  <% elsif flash[:alert] %>
+    <div class="alert alert-danger text-center mt-3" role="alert">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+</div>
