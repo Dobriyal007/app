@@ -3,7 +3,7 @@
   <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Barcode</h2>
 	 <%= form_with(url: search_fas_path, method: :get, local: true, class: "form-inline justify-content-center mb-3") do %>
 	  <div class="form-group">
-	    <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2 my-2", placeholder: "Enter Barcode" %>
+	    <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2 my-2", placeholder: "Enter Barcode", autocomplete: 'off' %>
 	  </div>
 	  <div class="text-center">
 	    <%= submit_tag "Search", class: "btn btn-primary my-2" %>
@@ -98,17 +98,21 @@
       }
 
       $('#confirmYesBtn').on('click', function () {
-        // Add your logic for 'Yes' button click here
-        // This can be an AJAX request or any other action you want
+        // Update the status in the span and store "Yes" in the database
+        $('.status-span[data-barcode="' + barcodeValue + '"]').text('OK');
+
+        // Add your logic to store "Yes" in the database (e.g., AJAX request)
+        // This is a placeholder and should be replaced with your actual implementation
+
         // Close the confirmation modal
         $('#confirmationModal').modal('hide');
       });
 
       $('#confirmNgBtn').on('click', function () {
-        // Add your logic for 'NG' button click here
+      	$('.status-span[data-barcode="' + barcodeValue + '"]').text('NG');
+        // Add your logic for 'No' button click here
         // This can be an AJAX request or any other action you want
-        // Open a new tab or window
-        window.open('your_ng_url_here', '_blank');
+
         // Close the confirmation modal
         $('#confirmationModal').modal('hide');
       });

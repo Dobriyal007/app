@@ -25,7 +25,7 @@
 	            <td><%= @fa.time&.strftime('%H:%M:%S') %></td>
 	            <td><%= @fa.Line %></td>
 	            <td><%= @fa.Model %></td>
-	            <td><%= form.text_field "barcodes[][value]", class: "form-control", placeholder: "Enter Barcode" %></td>
+	            <td><%= form.text_field "barcodes[][value]", class: "form-control", placeholder: "Enter Barcode", autocomplete: 'off' %></td>
 	          </tr>
 	        <% end %>
 	        <tr>

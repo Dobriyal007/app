@@ -19,7 +19,7 @@
       </div>
       <div class="mb-2">
         <%= form.label :qty, class: 'form-label' %>
-        <%= form.text_field :qty, class: 'form-control', pattern: '\d+', placeholder: 'Enter quantity (Max: 20)' %>
+        <%= form.text_field :qty, class: 'form-control', pattern: '\d+', placeholder: 'Enter quantity (Max: 20)', autocomplete: 'off' %>
       </div>
       <%= form.submit 'Submit', class: 'btn btn-primary w-100' %>
     <% end %>
