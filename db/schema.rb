@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_20_045413) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_28_083700) do
   create_table "barcodes", force: :cascade do |t|
     t.string "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "fa_id", null: false
+    t.string "status"
+    t.text "remarks"
     t.index ["fa_id"], name: "index_barcodes_on_fa_id"
   end
 

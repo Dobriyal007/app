@@ -1,23 +1,118 @@
 <!-- app/views/fas/search.html.erb -->
 <div class="container mt-4">
   <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Barcode</h2>
-  
-  <%= form_tag(search_fas_path, method: :get, class: "form-inline justify-content-center mb-3") do %>
-    <div class="form-group">
-      <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2", placeholder: "Enter Barcode" %>
-    </div>
-    <div class="text-center">
-    	<%= submit_tag "Search", class: "btn btn-primary" %>
-    </div>
-  <% end %>
+	 <%= form_with(url: search_fas_path, method: :get, local: true, class: "form-inline justify-content-center mb-3") do %>
+	  <div class="form-group">
+	    <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2 my-2", placeholder: "Enter Barcode" %>
+	  </div>
+	  <div class="text-center">
+	    <%= submit_tag "Search", class: "btn btn-primary my-2" %>
+	  </div>
+	<% end %>
 
-  <% if @fa %>
+  <% if @search.present? %>
     <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Result</h2>
-    <!-- Display FA details and associated barcode data here -->
-    <%= render 'fas/show', fa: @fa %>
+    <table class="table table-striped table-bordered align-middle text-center">
+      <thead>
+        <tr>
+          <th style="width: 80px">Sr No.</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Line</th>
+          <th>Model</th>
+          <th>Barcode</th>
+          <th>FT Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @search.each_with_index do |fa, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= fa.date&.strftime('%Y-%m-%d') %></td>
+            <td><%= fa.time&.strftime('%H:%M:%S') %></td>
+            <td><%= fa.Line %></td>
+            <td><%= fa.Model %></td>
+            <td>
+			        <% fa.barcodes.each do |barcode| %>
+			          <% if barcode.value == params[:barcode] %>
+			            <a href="#" class="barcode-cell" data-barcode="<%= barcode.value %>">
+			              <%= barcode.value %>
+			            </a>
+			            <!-- Add a hidden field for status -->
+			            <input type="hidden" class="status-field" data-barcode="<%= barcode.value %>" value="<%= barcode.status %>">
+			          <% end %>
+			        <% end %>
+			      </td>
+		        <td>
+		          <!-- Display the status based on the barcode value -->
+		          <span class="status-span" data-barcode="<%= params[:barcode] %>"></span>
+		        </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <!-- Bootstrap Modal for Confirmation -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmationModalLabel">FT Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Content of your confirmation message goes here -->
+            <p>What is the FT status of barcode: <span id="confirmationBarcode"></span>?</p>
+          </div>
+          <div class="modal-footer">
+            <!-- Add 'data-dismiss' attribute to close the modal -->
+            <button type="button" class="btn btn-secondary" id="confirmNgBtn">NG</button>
+            <button type="button" class="btn btn-primary" id="confirmYesBtn">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   <% elsif flash[:alert] %>
     <div class="alert alert-danger text-center mt-3" role="alert">
       <%= flash[:alert] %>
     </div>
   <% end %>
 </div>
+
+<!-- Your additional scripts go here -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    $('.barcode-cell').on('click', function () {
+      const barcodeValue = $(this).data('barcode');
+      const statusField = $('.status-field[data-barcode="' + barcodeValue + '"]');
+
+      if (statusField.length > 0) {
+        const statusValue = statusField.val();
+        $('#confirmationBarcode').text(barcodeValue);
+        $('.status-span').text(statusValue); // Update the status in the span
+        $('#confirmationModal').modal('show');
+      } else {
+        console.error('Status field not found for barcode: ' + barcodeValue);
+      }
+
+      $('#confirmYesBtn').on('click', function () {
+        // Add your logic for 'Yes' button click here
+        // This can be an AJAX request or any other action you want
+        // Close the confirmation modal
+        $('#confirmationModal').modal('hide');
+      });
+
+      $('#confirmNgBtn').on('click', function () {
+        // Add your logic for 'NG' button click here
+        // This can be an AJAX request or any other action you want
+        // Open a new tab or window
+        window.open('your_ng_url_here', '_blank');
+        // Close the confirmation modal
+        $('#confirmationModal').modal('hide');
+      });
+    });
+  });
+</script>
+

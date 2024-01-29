@@ -64,9 +64,9 @@ class FasController < ApplicationController
 	      flash.now[:alert] = 'Failed to save barcode data.'
 	      render 'show'
 	    end
-	  else
-	    flash.now[:alert] = 'Please provide values for all barcodes.'
-	    render 'show'
+	  # else
+	  #   flash.now[:alert] = 'Please provide values for all barcodes.'
+	  #   render 'show'
 	  end
 	end
 
@@ -80,15 +80,16 @@ class FasController < ApplicationController
   end
 
   def search
-    @barcode = Barcode.find_by(value: params[:barcode])
-    if @barcode
-      @fa = @barcode.fa
-    else
-      flash.now[:alert] = "Barcode not found."
-    end
-    render 'search'
-  end
-
+	  @barcodes = Barcode.where(value: params[:barcode])
+	  if @barcodes.present?
+	  	# @search = @barcodes.first.fa
+	    @search = @barcodes.map(&:fa)
+	  else
+	    flash.now[:alert] = "No matching barcodes found."
+	    @search = []
+	  end
+	  # render 'search'
+	end
 
 private
 
