@@ -1,14 +1,14 @@
 <!-- app/views/fas/search.html.erb -->
 <div class="container mt-4">
   <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Barcode</h2>
-	 <%= form_with(url: search_fas_path, method: :get, local: true, class: "form-inline justify-content-center mb-3") do %>
-	  <div class="form-group">
-	    <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2 my-2", placeholder: "Enter Barcode", autocomplete: 'off' %>
-	  </div>
-	  <div class="text-center">
-	    <%= submit_tag "Search", class: "btn btn-primary my-2" %>
-	  </div>
-	<% end %>
+  <%= form_with(url: search_fas_path, method: :get, local: true, class: "form-inline justify-content-center mb-3") do %>
+    <div class="form-group">
+      <%= text_field_tag :barcode, params[:barcode], class: "form-control mr-2 my-2", placeholder: "Enter Barcode", autocomplete: 'off' %>
+    </div>
+    <div class="text-center">
+      <%= submit_tag "Search", class: "btn btn-primary my-2" %>
+    </div>
+  <% end %>
 
   <% if @search.present? %>
     <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Search Result</h2>
@@ -21,102 +21,60 @@
           <th>Line</th>
           <th>Model</th>
           <th>Barcode</th>
-          <th>FT Status</th>
+          <th>Analysis</th>
         </tr>
       </thead>
       <tbody>
-        <% @search.each_with_index do |fa, index| %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td><%= fa.date&.strftime('%Y-%m-%d') %></td>
-            <td><%= fa.time&.strftime('%H:%M:%S') %></td>
-            <td><%= fa.Line %></td>
-            <td><%= fa.Model %></td>
-            <td>
-			        <% fa.barcodes.each do |barcode| %>
-			          <% if barcode.value == params[:barcode] %>
-			            <a href="#" class="barcode-cell" data-barcode="<%= barcode.value %>">
-			              <%= barcode.value %>
-			            </a>
+			  <% @search.each_with_index do |fa, index| %>
+			    <tr>
+			      <td><%= index + 1 %></td>
+			      <td><%= fa.date&.strftime('%Y-%m-%d') %></td>
+			      <td><%= fa.time&.strftime('%H:%M:%S') %></td>
+			      <td><%= fa.Line %></td>
+			      <td><%= fa.Model %></td>
+			      <% fa.barcodes.each do |barcode| %>
+			        <% if barcode.value == params[:barcode] %>
+			          <td>
+			          	<%= barcode.value %>
 			            <!-- Add a hidden field for status -->
 			            <input type="hidden" class="status-field" data-barcode="<%= barcode.value %>" value="<%= barcode.status %>">
-			          <% end %>
-			        <% end %>
-			      </td>
-		        <td>
-		          <!-- Display the status based on the barcode value -->
-		          <span class="status-span" data-barcode="<%= params[:barcode] %>"></span>
-		        </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <!-- Bootstrap Modal for Confirmation -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmationModalLabel">FT Status</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- Content of your confirmation message goes here -->
-            <p>What is the FT status of barcode: <span id="confirmationBarcode"></span>?</p>
-          </div>
-          <div class="modal-footer">
-            <!-- Add 'data-dismiss' attribute to close the modal -->
-            <button type="button" class="btn btn-secondary" id="confirmNgBtn">NG</button>
-            <button type="button" class="btn btn-primary" id="confirmYesBtn">OK</button>
-          </div>
-        </div>
-      </div>
-    </div>
+			            <!-- Add a hidden field for remarks -->
+			            <input type="hidden" class="remarks-field" data-barcode="<%= barcode.value %>" value="<%= barcode.remarks %>">
+			          </td>
+			          <td>
+								  <!-- Add form fields for Status and Remarks -->
+								  <%= form_tag(update_status_and_remarks_fas_path, method: :post) do %>
+								    <%= hidden_field_tag :barcode, barcode.value %>
+								    <!-- Column for Status -->
+								    <div class="form-group">
+								      <label for="status">Status</label>
+								      <%= text_field_tag :status, barcode.status, class: 'form-control', placeholder: 'Update Status' %>
+								    </div>
+								  </td>
+								  <td>
+								    <!-- Column for Remarks -->
+								    <div class="form-group">
+								      <label for="remarks">Remarks</label>
+								      <%= text_field_tag :remarks, barcode.remarks, class: 'form-control', placeholder: 'Update Remarks' %>
+								    </div>
+								  </td>
+								  <td>
+								    <%= submit_tag 'Update', class: 'btn btn-primary btn-sm mt-1' %>
+								  </td>
+								  <% end %>
+								</td>
 
+			        <% end %>
+			      <% end %>
+			    </tr>
+			  <% end %>
+			</tbody>
+
+    </table>
   <% elsif flash[:alert] %>
     <div class="alert alert-danger text-center mt-3" role="alert">
       <%= flash[:alert] %>
     </div>
   <% end %>
 </div>
-
-<!-- Your additional scripts go here -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    $('.barcode-cell').on('click', function () {
-      const barcodeValue = $(this).data('barcode');
-      const statusField = $('.status-field[data-barcode="' + barcodeValue + '"]');
-
-      if (statusField.length > 0) {
-        const statusValue = statusField.val();
-        $('#confirmationBarcode').text(barcodeValue);
-        $('.status-span').text(statusValue); // Update the status in the span
-        $('#confirmationModal').modal('show');
-      } else {
-        console.error('Status field not found for barcode: ' + barcodeValue);
-      }
-
-      $('#confirmYesBtn').on('click', function () {
-        // Update the status in the span and store "Yes" in the database
-        $('.status-span[data-barcode="' + barcodeValue + '"]').text('OK');
-
-        // Add your logic to store "Yes" in the database (e.g., AJAX request)
-        // This is a placeholder and should be replaced with your actual implementation
-
-        // Close the confirmation modal
-        $('#confirmationModal').modal('hide');
-      });
-
-      $('#confirmNgBtn').on('click', function () {
-      	$('.status-span[data-barcode="' + barcodeValue + '"]').text('NG');
-        // Add your logic for 'No' button click here
-        // This can be an AJAX request or any other action you want
-
-        // Close the confirmation modal
-        $('#confirmationModal').modal('hide');
-      });
-    });
-  });
-</script>
 

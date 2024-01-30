@@ -91,6 +91,48 @@ class FasController < ApplicationController
 	  # render 'search'
 	end
 
+	# def update_status
+	# 	binding.pry
+	#   barcode = params[:barcode]
+	#   status = params[:status]
+	#   # Your logic to update the status in the database
+	#   # Example: Assuming you have a model named Fa and a column named status
+	#   fa = Barcode.where(value: params[:barcode])
+	#   # fa = Fa.find_by(barcode: barcode)
+	#   fa.update(status: status)
+	#   render 'search'
+	#   # render json: { success: true }
+	# end
+
+	# def update_remarks
+	# 	binding.pry
+	# 	barcode = params[:barcode]
+	#   remarks = params[:remarks]
+	#   # Your logic to update the status in the database
+	#   # Example: Assuming you have a model named Fa and a column named status
+	#   fa = Barcode.where(value: params[:barcode])
+	#   # fa = Fa.find_by(barcode: barcode)
+	#   fa.update(remarks: remarks)
+	#   render 'search'
+	# end
+
+	def update_status_and_remarks
+	  barcode = params[:barcode]
+	  status = params[:status]
+	  remarks = params[:remarks]
+
+  	barcode_record = Barcode.find_by(value: barcode)
+	  if barcode_record
+	    barcode_record.update(status: status, remarks: remarks)
+	    flash.now[:alert] = 'Status and remarks updated successfully.'
+	  else
+	    flash.now[:alert] = 'Barcode not found.'
+	    barcode_record = []
+	  end
+	  render 'search'
+	  # redirect_to search_fas_path(barcode: barcode)
+	end
+
 private
 
   def fa_params

@@ -8,12 +8,13 @@
     <tbody>
       <tr>
         <th style="width: 80px">Sr No.</th>
-        <th>Date</th>
+        <th style="width: 130px">Date</th>
         <th>Time</th>
         <th>Line</th>
-        <th>Model</th>
-        <th>Barcode</th>
+        <th style="width: 100px">Model</th>
+        <th style="width: 330px">Barcode</th>
         <th style="width: 100px">FT Status</th>
+        <th>Remarks</th>
       </tr>
       <% serial_number = 0 %>
       <% @submitted_fas.reverse_each.with_index(1) do |fa, index| %>
@@ -27,6 +28,7 @@
             <td><%= fa.Model %></td>
             <td><%= barcode.value %></td>
             <td><%= barcode.status %></td>
+            <td><%= barcode.remarks %></td>
           </tr>
         <% end %>
       <% end %>

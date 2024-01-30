@@ -41,3 +41,19 @@
 	  <%= link_to "Go to List >>", root_path, class: "btn btn-sm btn-secondary", style: "color: white;" %>
 	</div>
 </div>
+
+<script>
+  $(document).on('keydown', '.barcode-input', function (e) {
+    if (e.which === 9) { // 'tab' key code
+      e.preventDefault();
+
+      // Move focus to the next input field in the same row
+      const currentRow = $(this).closest('tr');
+      const nextInput = currentRow.next().find('.barcode-input');
+
+      if (nextInput.length > 0) {
+        nextInput.focus();
+      }
+    }
+  });
+</script>
