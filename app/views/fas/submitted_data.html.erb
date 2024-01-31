@@ -41,7 +41,7 @@
             <% @submitted_fas.reverse_each.with_index(1) do |fa, index| %>
               <% fa.barcodes.each do |barcode| %>
                 <% serial_number += 1 %>
-                <tr>
+                <tr class="table-row">
                   <td><%= serial_number %></td>
                   <td><%= fa.date&.strftime('%Y-%m-%d') %></td>
                   <td><%= fa.time&.strftime('%H:%M:%S') %></td>
@@ -80,6 +80,56 @@
           </tbody>
       </table>
     </div>
-    
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<style type="text/css">
+  .container {
+    max-width: 1600px;
+  }
+  .mb-2 {
+    margin-top: 6.5rem!important;
+  }
+  .col-2 {
+    width: 15%;
+  }
+</style>
+
+<script>
+  $(document).ready(function() {
+    $("#filterBtn").on("click", function() {
+      const fromDate = $("#filterDateFrom").val();
+      const toDate = $("#filterDateTo").val();
+
+      $(".table-row").each(function() {
+        const rowDate = $(this).find("td:eq(1)").text(); // Assuming the date is in the second column, adjust as needed
+
+        if (isValidDate(fromDate) && isValidDate(toDate)) {
+          const dateFrom = new Date(fromDate);
+          const dateTo = new Date(toDate);
+          const rowDateObj = new Date(rowDate);
+
+          if (rowDateObj >= dateFrom && rowDateObj <= dateTo) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        } else {
+          // Handle invalid dates if needed
+        }
+      });
+    });
+
+    $("#resetBtn").on("click", function() {
+      $(".table-row").show();
+    });
+
+    function isValidDate(dateString) {
+      // Check if the dateString is a valid date
+      return dateString && !isNaN(new Date(dateString).getTime());
+    }
+  });
+</script>
+
