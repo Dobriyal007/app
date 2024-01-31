@@ -25,7 +25,7 @@
 	            <td><%= @fa.time&.strftime('%H:%M:%S') %></td>
 	            <td><%= @fa.Line %></td>
 	            <td><%= @fa.Model %></td>
-	            <td><%= form.text_field "barcodes[][value]", class: "form-control", placeholder: "Enter Barcode", autocomplete: 'off' %></td>
+	            <td><%= form.text_field "barcodes[][value]", class: "form-control", placeholder: "Enter Barcode", autocomplete: 'off', data: { model: @fa.Model } %></td>
 	          </tr>
 	        <% end %>
 	        <tr>
@@ -46,15 +46,34 @@
 
 <script>
   $(document).ready(function () {
-    // Your existing JavaScript logic here
 
     $(document).on('keydown', '.form-control', function (e) {
       const currentInput = $(this);
       const currentValue = currentInput.val();
 
-      // Check if the current input length is above 10 characters
-      if (currentValue.length > 30) {
-        // Move focus to the next input field in the same row
+      // Get the model value for the current input field
+      const currentModel = currentInput.data('model'); // Assuming data-model attribute contains the model information
+
+      // Arrays of models with different input lengths
+      const modelsLength30 = ['SSE-SDS5', 'OPO-SACJ1', 'OPO-SHN6', 'OPO-SCP5', 'OPO-SDY5', 'OPO-SHC9'];
+      const modelsLength14 = ['BBK-SJV5', 'BBK-SHX4', 'BBK-SJQ6', 'BBK-SHV2', 'BBK-SJV6', 'BBK-SJV5', 'BBK-SKC1'];
+      const modelsLength20 = ['TSNSBC4', 'TSNSJY4'];
+      const modelsLength28 = ['SSE-SFW9', 'SSE-SKP7', 'SSE-SCT9', 'SSE-SJA4', 'SSE-SGM1'];
+      const modelsLength24 = ['MIX-SHR5', 'MIX-SJZ5', 'MIX-SKS1'];
+      const modelsLength53 = ['MTO-JU8'];
+      const modelsLength25 = ['OPO-SKM1', 'OPO-SHV3', 'OPO-SJB4', 'OPO-SHX3'];
+
+      // Check if the current input length is above the specified maximum length
+      const maxLength = modelsLength30.includes(currentModel) ? 30 :
+                       modelsLength14.includes(currentModel) ? 14 :
+                       modelsLength20.includes(currentModel) ? 20 :
+                       modelsLength28.includes(currentModel) ? 28 :
+                       modelsLength24.includes(currentModel) ? 24 :
+                       modelsLength53.includes(currentModel) ? 53 :
+                       modelsLength25.includes(currentModel) ? 25 : 55;
+
+      // Move focus to the next input field in the same row
+      if (currentValue.length >= maxLength) {
         const currentRow = currentInput.closest('tr');
         const nextInput = currentRow.next().find('.form-control');
 
@@ -66,3 +85,5 @@
     });
   });
 </script>
+
+
