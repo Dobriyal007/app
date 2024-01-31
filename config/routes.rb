@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   resources :fas do
     collection do
       get 'search'
-      post 'update_status'
-      post 'update_remarks'
+      # post 'update_status'
+      # post 'update_remarks'
       get 'export_excel'
       post 'submit_barcode_data'
       post 'update_status_and_remarks'

@@ -48,14 +48,14 @@
 								    <!-- Column for Status -->
 								    <div class="form-group">
 								      <label for="status">Status</label>
-								      <%= text_field_tag :status, barcode.status, class: 'form-control', placeholder: 'Update Status' %>
+								      <%= text_field_tag :status, barcode.status, class: 'form-control', placeholder: 'Update Status', value: 'OK' %>
 								    </div>
 								  </td>
 								  <td>
 								    <!-- Column for Remarks -->
 								    <div class="form-group">
 								      <label for="remarks">Remarks</label>
-								      <%= text_field_tag :remarks, barcode.remarks, class: 'form-control', placeholder: 'Update Remarks' %>
+								      <%= text_field_tag :remarks, barcode.remarks, class: 'form-control', placeholder: 'Update Remarks', value: 'N/A' %>
 								    </div>
 								  </td>
 								  <td>
@@ -63,13 +63,11 @@
 								  </td>
 								  <% end %>
 								</td>
-
 			        <% end %>
 			      <% end %>
 			    </tr>
 			  <% end %>
 			</tbody>
-
     </table>
   <% elsif flash[:alert] %>
     <div class="alert alert-danger text-center mt-3" role="alert">

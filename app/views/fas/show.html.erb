@@ -41,19 +41,28 @@
 	  <%= link_to "Go to List >>", root_path, class: "btn btn-sm btn-secondary", style: "color: white;" %>
 	</div>
 </div>
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
-  $(document).on('keydown', '.barcode-input', function (e) {
-    if (e.which === 9) { // 'tab' key code
-      e.preventDefault();
+  $(document).ready(function () {
+    // Your existing JavaScript logic here
 
-      // Move focus to the next input field in the same row
-      const currentRow = $(this).closest('tr');
-      const nextInput = currentRow.next().find('.barcode-input');
+    $(document).on('keydown', '.form-control', function (e) {
+      const currentInput = $(this);
+      const currentValue = currentInput.val();
 
-      if (nextInput.length > 0) {
-        nextInput.focus();
+      // Check if the current input length is above 10 characters
+      if (currentValue.length > 30) {
+        // Move focus to the next input field in the same row
+        const currentRow = currentInput.closest('tr');
+        const nextInput = currentRow.next().find('.form-control');
+
+        // Move to the next row
+        if (nextInput.length > 0) {
+          nextInput.focus();
+        }
       }
-    }
+    });
   });
 </script>

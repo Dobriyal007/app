@@ -8,13 +8,16 @@
     <tbody>
       <tr>
         <th style="width: 80px">Sr No.</th>
-        <th style="width: 130px">Date</th>
+        <th>Date</th>
         <th>Time</th>
         <th>Line</th>
         <th style="width: 100px">Model</th>
         <th style="width: 330px">Barcode</th>
+        <th style="width: 130px">Out Date</th>
+        <th>Out Time</th>
         <th style="width: 100px">FT Status</th>
         <th>Remarks</th>
+        <th>Time Gap</th>
       </tr>
       <% serial_number = 0 %>
       <% @submitted_fas.reverse_each.with_index(1) do |fa, index| %>
@@ -27,8 +30,32 @@
             <td><%= fa.Line %></td>
             <td><%= fa.Model %></td>
             <td><%= barcode.value %></td>
-            <td><%= barcode.status %></td>
+            <td>
+              <% if barcode.status.present? %>
+                <%= barcode.updated_at&.strftime('%Y-%m-%d') %>
+              <% else %>
+                <%= '' %>
+              <% end %>
+            </td>
+            <td>
+              <% if barcode.status.present? %>
+                <%= barcode.updated_at&.strftime('%H:%M:%S') %>
+              <% else %>
+                <%= '' %>
+              <% end %>
+            </td>
+            <td class="<%= 'text-danger' if barcode.status == 'NG' %>"><%= barcode.status %></td>
             <td><%= barcode.remarks %></td>
+            <td>
+              <% if barcode.updated_at.present? && fa.time.present? && barcode.status.present? %>
+                <% updated_at_time = barcode.updated_at.to_time %>
+                <% fa_time = fa.time.to_time %>
+                <% time_difference = (updated_at_time - fa_time).abs %>
+                <%= Time.at(time_difference).utc.strftime('%H:%M:%S') %>
+              <% else %>
+                <%= '' %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       <% end %>

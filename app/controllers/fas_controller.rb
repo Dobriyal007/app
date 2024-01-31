@@ -88,11 +88,9 @@ class FasController < ApplicationController
 	    flash.now[:alert] = "No matching barcodes found."
 	    @search = []
 	  end
-	  # render 'search'
 	end
 
 	# def update_status
-	# 	binding.pry
 	#   barcode = params[:barcode]
 	#   status = params[:status]
 	#   # Your logic to update the status in the database
@@ -105,7 +103,6 @@ class FasController < ApplicationController
 	# end
 
 	# def update_remarks
-	# 	binding.pry
 	# 	barcode = params[:barcode]
 	#   remarks = params[:remarks]
 	#   # Your logic to update the status in the database
@@ -123,7 +120,10 @@ class FasController < ApplicationController
 
   	barcode_record = Barcode.find_by(value: barcode)
 	  if barcode_record
+	  	# Check if the status and remarks are present and not empty
+	  	# barcode_record.update(status: status.presence || barcode_record.status, remarks: remarks.presence || barcode_record.remarks)
 	    barcode_record.update(status: status, remarks: remarks)
+	    updated_at_time = barcode_record.updated_at
 	    flash.now[:alert] = 'Status and remarks updated successfully.'
 	  else
 	    flash.now[:alert] = 'Barcode not found.'
