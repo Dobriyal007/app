@@ -37,7 +37,7 @@ class FasController < ApplicationController
 	end
 
 	 def export_to_excel
-    @submitted_fas = Fa.includes(:barcodes).all # Replace with your logic to retrieve data
+	 	@submitted_fas = Fa.includes(:barcodes).all # Replace with your logic to retrieve data
     respond_to do |format|
       format.xlsx {
         # Create an Axlsx::Package and workbook
