@@ -1,3 +1,4 @@
+require 'axlsx'
 class FasController < ApplicationController
 
   def index
@@ -34,6 +35,68 @@ class FasController < ApplicationController
 	    }
 	  end
 	end
+
+	 def export_to_excel
+    @submitted_fas = Fa.includes(:barcodes).all # Replace with your logic to retrieve data
+    respond_to do |format|
+      format.xlsx {
+        # Create an Axlsx::Package and workbook
+        xlsx_package = Axlsx::Package.new
+        wb = xlsx_package.workbook
+
+        # Define a centered and bordered style for the entire worksheet
+        centered_bordered_style = wb.styles.add_style(
+          alignment: { horizontal: :center },
+          border: { style: :thin, color: '000000' } # Black border lines
+        )
+
+        # Define a bold style for the header
+        bold_style = wb.styles.add_style(b: true, alignment: { horizontal: :center }, border: { style: :thin, color: '000000' })
+
+         # Define a red style for the "NG" status
+        red_style = wb.styles.add_style(
+          b: true,
+          alignment: { horizontal: :center },
+          border: { style: :thin, color: '000000' },
+          fg_color: 'FF0000' # Red background color
+        )
+        	
+        # Add worksheet and headers
+        wb.add_worksheet(name: 'Failure Analysis Data') do |sheet|
+          # Add bold, centered, and bordered header row
+          sheet.add_row ['Sr No.', 'Date', 'Time', 'Line', 'Model', 'Barcode', 'Out Date', 'Out Time', 'FT Status', 'Remarks', 'Time Gap'], style: bold_style
+
+          # Add data rows with the same style
+          serial_number = 0
+          @submitted_fas.reverse_each.with_index(1) do |fa, index|
+            fa.barcodes.each do |barcode|
+              serial_number += 1
+              # Check if the status is "NG" and apply red_style
+              status_style = (barcode.status == 'NG' ? red_style : centered_bordered_style)
+              sheet.add_row [
+                serial_number,
+                fa.date&.strftime('%Y-%m-%d'),
+                fa.time&.strftime('%H:%M:%S'),
+                fa.Line,
+                fa.Model,
+                barcode.value,
+                (barcode.status.present? ? barcode.updated_at&.strftime('%Y-%m-%d') : ''),
+                (barcode.status.present? ? barcode.updated_at&.strftime('%H:%M:%S') : ''),
+                barcode.status,
+                barcode.remarks,
+                (barcode.updated_at.present? && fa.time.present? && barcode.status.present? ? Time.at((barcode.updated_at.to_time - fa.time.to_time).abs).utc.strftime('%H:%M:%S') : '')
+              ], style: status_style
+            end
+          end
+        end
+
+        # Send the file to the user
+        send_data xlsx_package.to_stream.read, filename: "failure_analysis_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx", type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', disposition: 'attachment'
+      }
+    end
+  end
+
+
 
   def destroy
 	  @fa = Fa.find(params[:id])
@@ -89,29 +152,6 @@ class FasController < ApplicationController
 	    @search = []
 	  end
 	end
-
-	# def update_status
-	#   barcode = params[:barcode]
-	#   status = params[:status]
-	#   # Your logic to update the status in the database
-	#   # Example: Assuming you have a model named Fa and a column named status
-	#   fa = Barcode.where(value: params[:barcode])
-	#   # fa = Fa.find_by(barcode: barcode)
-	#   fa.update(status: status)
-	#   render 'search'
-	#   # render json: { success: true }
-	# end
-
-	# def update_remarks
-	# 	barcode = params[:barcode]
-	#   remarks = params[:remarks]
-	#   # Your logic to update the status in the database
-	#   # Example: Assuming you have a model named Fa and a column named status
-	#   fa = Barcode.where(value: params[:barcode])
-	#   # fa = Fa.find_by(barcode: barcode)
-	#   fa.update(remarks: remarks)
-	#   render 'search'
-	# end
 
 	def update_status_and_remarks
 	  barcode = params[:barcode]

@@ -1,0 +1,26 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: 'Failure Analysis Data') do |sheet|
+  # Add headers
+  sheet.add_row ['Sr No.', 'Date', 'Time', 'Line', 'Model', 'Barcode', 'Out Date', 'Out Time', 'FT Status', 'Remarks', 'Time Gap']
+
+  if @submitted_fas.present?
+    @submitted_fas.each_with_index do |fa, index|
+      fa.barcodes.each do |barcode|
+        sheet.add_row [
+          index + 1,
+          fa.date&.strftime('%Y-%m-%d'),
+          fa.time&.strftime('%H:%M:%S'),
+          fa.Line,
+          fa.Model,
+          barcode.value,
+          barcode.updated_at&.strftime('%Y-%m-%d'),  # Assuming this is 'Out Date'
+          barcode.updated_at&.strftime('%H:%M:%S'),  # Assuming this is 'Out Time'
+          barcode.status,                            # 'FT Status'
+          barcode.remarks,                           # 'Remarks'
+          ''                                         # 'Time Gap' (Need clarification on how Time Gap is calculated)
+        ]
+      end
+    end
+  end
+end
+
