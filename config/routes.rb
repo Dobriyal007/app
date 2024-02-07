@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   # Resourceful routes for fas
   resources :fas do
     collection do
-      get 'search'
+      match 'search', via: [:get, :post]
       get 'export_to_excel', as: 'export_to_excel'
       get 'export_excel'
       post 'submit_barcode_data'

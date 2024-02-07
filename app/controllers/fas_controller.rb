@@ -1,5 +1,7 @@
+require 'digest'
 require 'axlsx'
 class FasController < ApplicationController
+	before_action :authenticate, only: :search
 
   def index
   	@fas = Fa.paginate(page: params[:page], per_page: 8)
@@ -127,9 +129,6 @@ class FasController < ApplicationController
 	      flash.now[:alert] = 'Failed to save barcode data.'
 	      render 'show'
 	    end
-	  # else
-	  #   flash.now[:alert] = 'Please provide values for all barcodes.'
-	  #   render 'show'
 	  end
 	end
 
@@ -143,6 +142,7 @@ class FasController < ApplicationController
   end
 
   def search
+		password = params[:password]
 	  @barcodes = Barcode.where(value: params[:barcode])
 	  if @barcodes.present?
 	  	# @search = @barcodes.first.fa
@@ -170,7 +170,6 @@ class FasController < ApplicationController
 	    barcode_record = []
 	  end
 	  render 'search'
-	  # redirect_to search_fas_path(barcode: barcode)
 	end
 
 private
@@ -178,4 +177,44 @@ private
   def fa_params
     params.require(:fa).permit(:Line, :Model, :qty)
   end
+
+  # def authenticate
+  #   # Replace 'your_password' with your actual password
+  #   correct_password = '9023579'
+
+  #   # Check if the user is not already authenticated in the current session
+  #   unless session[:authenticated]
+  #     if params[:password] == correct_password
+  #       session[:authenticated] = true
+  #     else
+  #       flash[:alert] = 'Incorrect password. Access denied.'
+  #       redirect_to new_fa_path
+  #     end
+  #   else
+  #     # If the flag is already set (user is authenticated),
+  #     # reset the flag when the search button is clicked
+  #     session[:authenticated] = false
+  #   end
+  # end
+
+  def authenticate
+	  # Replace 'your_password' with your actual password
+	  correct_password = '9023579'
+	  # Check if the user is not already authenticated in the current session
+	  unless session[:authenticated]
+	    # Hash the provided password before comparison
+	    hashed_password = Digest::SHA256.hexdigest(params[:password])
+
+	    if hashed_password == Digest::SHA256.hexdigest(correct_password)
+	      session[:authenticated] = true
+	    else
+	      flash[:alert] = 'Incorrect password. Access denied.'
+	      redirect_to new_fa_path
+	    end
+	  else
+	    # If the flag is already set (user is authenticated),
+	    # reset the flag when the search button is clicked
+	    session[:authenticated] = false
+	  end
+	end
 end
