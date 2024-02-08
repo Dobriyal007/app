@@ -1,0 +1,4 @@
+<%= line_chart @barcode_data, library: { theme: 'highcharts' }, height: '500px', id: 'barcode-chart' %>
+<%#= pie_chart Yogurt.group(:flavor).count %>
+<%= bar_chart Fa.group(:Model).sum(:qty),title: "Top Ten Products (By Total Quantity Purchased)",
+  colors: ['brown'] %>

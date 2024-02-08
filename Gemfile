@@ -46,11 +46,17 @@ gem "bootsnap", require: false
 
 gem 'simple_form'
 gem 'kaminari'
+# Binding pry gem
 gem 'pry', '~> 0.14.2'
+# Pagination Gem
 gem 'will_paginate'
+# Excel sheet gem
 gem 'axlsx_rails'
-# gem 'axlsx', '~> 2.0'
 gem 'bootstrap', '~> 5.0.0'
+# Graphs and charts gem
+gem 'chartkick'
+gem 'highcharts-rails'
+gem 'groupdate'
 
 
 group :development, :test do

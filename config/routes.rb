@@ -10,11 +10,12 @@ Rails.application.routes.draw do
   # Resourceful routes for fas
   resources :fas do
     collection do
-      match 'search', via: [:get, :post]
-      get 'export_to_excel', as: 'export_to_excel'
+      get 'graphs'
       get 'export_excel'
       post 'submit_barcode_data'
       post 'update_status_and_remarks'
+      match 'search', via: [:get, :post]
+      get 'export_to_excel', as: 'export_to_excel'
     end
     member do
       get 'barcodes'  # New route for displaying barcode data

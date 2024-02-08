@@ -3,6 +3,9 @@ import { Application } from "@hotwired/turbo-rails"
 import "@hotwired/turbo-rails"
 // Turbo.disableDriveByDefault();
 import "controllers"
+//= require highcharts
+//= require chartkick
+
 
 const application = Application.start()
 
