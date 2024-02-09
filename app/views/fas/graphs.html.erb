@@ -1,4 +1,38 @@
-<%= line_chart @barcode_data, library: { theme: 'highcharts' }, height: '500px', id: 'barcode-chart' %>
-<%#= pie_chart Yogurt.group(:flavor).count %>
-<%= bar_chart Fa.group(:Model).sum(:qty),title: "Top Ten Products (By Total Quantity Purchased)",
-  colors: ['brown'] %>
+<div class="chart-grid">
+  <div class="chart-container">
+    <!-- <h2>Pie Chart: Line Counts</h2> -->
+    <%= pie_chart Fa.group(:Model).sum(:qty), title: "Model vs Qty", width: '50%', colors: ['#3498db', '#2ecc71', '#e74c8c'] %>
+  </div>
+
+  <div class="chart-container">
+    <!-- <h2>Bar Chart: Line Quantities</h2> -->
+    <%= bar_chart Fa.group(:Line).sum(:qty), title: "Line vs Qty", colors: ['#27ae60'], width: '50%', library: { legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle' } } %>
+
+  </div>
+
+  <div class="chart-container">
+    <!-- <h2>Line Chart: Barcode Data</h2> -->
+    <%= line_chart @barcode_data, library: {
+                  title: { text: 'Models and Total Quantity', style: { color: '#333', fontSize: '18px' } },
+                  xAxis: { labels: { style: { fontSize: '12px' } } },
+                  yAxis: { title: { text: 'Quantity', style: { fontSize: '12px' } } },
+                  legend: { enabled: true }
+                }, width: '50%' %>
+  </div>
+
+  <div class="chart-container">
+    <!-- <h2>Column Chart: Line Data</h2> -->
+    <%= column_chart @barcode_data, title: "Line Data", width: '50%',
+                 library: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' } } %>
+  </div>
+</div>
+
+<style>
+  /* Style to arrange charts in four corners */
+  .chart-container {
+    width: 48%; /* Set the width of each container */
+    height: 300px; /* Set the height of each container */
+    margin: 10px; /* Add margin between containers */
+    float: left; /* Float left to arrange containers side by side */
+  }
+</style>

@@ -173,8 +173,12 @@ class FasController < ApplicationController
 	end
 
 	def graphs
+		# @barcode_data = Fa.all.pluck([:Line])
 		# @barcode_data = Barcode.group("strftime('%Y-%m-%d', created_at)").count
-		@barcode_data = Fa.includes(:barcodes).all.pluck("Model as quantity_sum")
+		@barcode_data = Barcode.group("strftime('%Y-%m-%d', created_at)").count
+		@fa_data = Fa.includes(:barcodes).all.pluck("Model","Line")
+		@line_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Line).sum(:qty)
+		@model_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Model).sum(:qty)
 	end
 
 private

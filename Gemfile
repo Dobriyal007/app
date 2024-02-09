@@ -56,8 +56,6 @@ gem 'bootstrap', '~> 5.0.0'
 # Graphs and charts gem
 gem 'chartkick'
 gem 'highcharts-rails'
-gem 'groupdate'
-
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

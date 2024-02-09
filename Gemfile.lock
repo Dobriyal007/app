@@ -122,8 +122,6 @@ GEM
     ffi (1.16.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    groupdate (6.4.0)
-      activesupport (>= 6.1)
     highcharts-rails (6.0.3)
       railties (>= 3.1)
     htmlentities (4.3.4)
@@ -301,7 +299,6 @@ DEPENDENCIES
   capybara
   chartkick
   debug
-  groupdate
   highcharts-rails
   importmap-rails
   jbuilder
