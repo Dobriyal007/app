@@ -53,7 +53,8 @@
               <% @submitted_fas.reverse_each.with_index(1) do |fa, index| %>
                 <% fa.barcodes.each do |barcode| %>
                   <% serial_number += 1 %>
-                  <tr class="table-row">
+                  <% duplicate_class = @submitted_fas.any? { |other_fa| other_fa.barcodes.any? { |other_barcode| other_barcode.value == barcode.value && other_barcode.id != barcode.id } } ? 'text-danger' : '' %>
+                  <tr class="table-row <%= duplicate_class %>">
                     <td><%= serial_number %></td>
                     <td><%= fa.date&.strftime('%Y-%m-%d') %></td>
                     <td><%= fa.time&.strftime('%H:%M:%S') %></td>

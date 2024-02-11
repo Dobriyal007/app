@@ -38,7 +38,7 @@ class FasController < ApplicationController
 	  end
 	end
 
-	 def export_to_excel
+	def export_to_excel
 	 	@submitted_fas = Fa.includes(:barcodes).all # Replace with your logic to retrieve data
     respond_to do |format|
       format.xlsx {
@@ -62,10 +62,16 @@ class FasController < ApplicationController
           border: { style: :thin, color: '000000' },
           fg_color: 'FF0000' # Red background color
         )
+         # Define a new style with an increased font size for the title row
+  			title_style = wb.styles.add_style(b: true, sz: 14, alignment: { horizontal: :center },
+  			 border: { style: :thin, color: '000000' })
+
         	
         # Add worksheet and headers
         wb.add_worksheet(name: 'Failure Analysis Data') do |sheet|
           # Add bold, centered, and bordered header row
+          sheet.add_row ['Failure Analysis Data'], style: title_style
+          sheet.merge_cells("A1:K1") # Merge cells for the title row
           sheet.add_row ['Sr No.', 'Date', 'Time', 'Line', 'Model', 'Barcode', 'Out Date', 'Out Time', 'FT Status', 'Remarks', 'Time Gap'], style: bold_style
 
           # Add data rows with the same style
@@ -93,12 +99,10 @@ class FasController < ApplicationController
         end
 
         # Send the file to the user
-        send_data xlsx_package.to_stream.read, filename: "failure_analysis_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx", type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', disposition: 'attachment'
+        send_data xlsx_package.to_stream.read, filename: "AF_data_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx", type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', disposition: 'attachment'
       }
     end
   end
-
-
 
   def destroy
 	  @fa = Fa.find(params[:id])
