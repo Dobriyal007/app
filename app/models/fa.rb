@@ -12,7 +12,7 @@ class Fa < ApplicationRecord
   LINES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
    '11', '12', '13', '15', '16', '17', '18', '19', '20',
    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
-    '32'].freeze
+    '32', '33', '34'].freeze
 
   MODELS = ['SSE-SJB4', 'SSE-SAW5', 'SSE-SCG6', 'SSE-SCT9', 'SSE-SDF8', 'SSE-SCV2', 'SSE-SDS5', 'SSE-SFW9',
     'SSE-SGM1', 'SSE-SJJ6', 'SSE-SJJ8', 'SSE-SKG5', 'SSE-SLB2', 'SSE-SLB7', 'SSE-SKP7', 'SSE-SKP2',

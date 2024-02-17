@@ -11,6 +11,10 @@
   </div>
 
   <div class="chart-container">
+    <%= bar_chart @monthly_data, xtitle: "Month", ytitle: "Qty", title: "Monthly Qty", colors: ['#27ae60'], width: '50%', library: { legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle', backgroundColor: "#3498db" } } %>
+  </div>
+
+  <div class="chart-container">
     <!-- <h2>Line Chart: Barcode Data</h2> -->
     <%= line_chart @barcode_data, library: {
                   title: { text: 'Models and Total Quantity', style: { color: '#333', fontSize: '18px' } },
@@ -34,5 +38,8 @@
     height: 300px; /* Set the height of each container */
     margin: 10px; /* Add margin between containers */
     float: left; /* Float left to arrange containers side by side */
+    background-color: #007bff;
+  }
+  .chart-grid {
   }
 </style>

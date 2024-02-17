@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="d-flex align-items-center justify-content-between mb-3">
-        <%= link_to 'Export to Excel', export_to_excel_fas_path(format: 'xlsx'), class: 'btn btn-success' %>
+         <%= link_to 'Export to Excel', export_to_excel_fas_path(format: 'xlsx'), class: 'btn btn-success popover-dismiss', tabindex: '0', role: 'button', data: { bs_toggle: 'popover', bs_content: "Entire data is downloaded in Excel file.", bs_title: 'Hi', bs_trigger: 'focus' } %>
       </div>
     </div>
     <div class="col-10">
@@ -161,4 +161,10 @@
       $("#filterDateFrom, #filterDateTo, #filterTimeFrom, #filterTimeTo").val("");  
     });
   });
+</script>
+<script>
+    // Initialize popover for the export link
+    var popover = new bootstrap.Popover(document.querySelector('.popover-dismiss'), {
+      trigger: 'focus'
+    });
 </script>

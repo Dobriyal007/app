@@ -1,7 +1,7 @@
 <nav class="navbar bg-primary" data-bs-theme="dark">
   <div class="container-fluid">
     <%= link_to "Home", new_fa_path, class: "navbar-brand", style: "color: white; font-weight: bold;" %>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation" data-bs-toggle="tooltip" data-bs-placement="down" title="Menu Page">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="offcanvas offcanvas-start text-bg-white" style="background-color: #0D6EDD;" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
@@ -43,7 +43,7 @@
         <%= label_tag :password, 'Password:', class: 'form-label', style: 'color: white;' %>
         <%= password_field_tag :password, nil, class: 'form-control', style: 'color: black;' %>
       </div>
-      <%= submit_tag 'Submit', class: 'btn btn-primary' %>
+      <%= submit_tag 'Submit', class: 'btn btn-primary', style: 'color: white; background-color: mediumblue;' %>
     <% end %>
   </div>
 </div>
