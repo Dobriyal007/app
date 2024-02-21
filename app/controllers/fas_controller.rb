@@ -110,31 +110,69 @@ class FasController < ApplicationController
 	  redirect_to @fa, notice: 'Data was successfully destroyed.'
 	end
 
-  def submit_barcode_data
+  # def submit_barcode_data
+	#   @fa = Fa.find(params[:format])
+	  
+	#   barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
+	#   if barcode_values.uniq.length != barcode_values.length
+	# 	  flash.now[:alert] = 'Do not enter duplicate Barcodes.'
+	# 	elsif all_values_present = barcode_values.all?(&:present?)
+	#     binding.pry
+	# 	  if all_values_present
+	# 	    # Build Barcode objects associated with @fa
+	# 	    barcode_values.each do |value|
+	# 	      @fa.barcodes.build(value: value)
+	# 	    end
+
+	# 	    # Save the @fa instance and all associated Barcode objects to the database
+	# 	    if @fa.save
+	# 	    	flash[:notice] = 'Barcode data submitted successfully.'
+	# 	    	# render 'submitted_data'
+	# 	      redirect_to  submitted_data_fa_path(@fa), notice: 'Barcode data submitted successfully.'
+	# 	      # redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
+	# 	    else
+	# 	      flash.now[:alert] = 'Failed to save barcode data.'
+	# 	      render 'show'
+	# 	    end
+	# 	  end
+	# 	end
+	# end
+
+	def submit_barcode_data
 	  @fa = Fa.find(params[:format])
 	  
 	  barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
-	  # Check if all barcode values are present
-    all_values_present = barcode_values.all?(&:present?)
 	  
-	  if all_values_present
-	    # Build Barcode objects associated with @fa
-	    barcode_values.each do |value|
-	      @fa.barcodes.build(value: value)
-	    end
+	  # Check for duplicate barcode values
+	  if barcode_values.uniq.length != barcode_values.length
+	    flash[:alert] = 'Do not enter duplicate Barcodes.'
+	    render 'show' # Adjust the redirection as needed
+	    return
+	  end
 
-	    # Save the @fa instance and all associated Barcode objects to the database
-	    if @fa.save
-	    	flash[:notice] = 'Barcode data submitted successfully.'
-	    	# render 'submitted_data'
-	      redirect_to  submitted_data_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-	      # redirect_to barcodes_fa_path(@fa), notice: 'Barcode data submitted successfully.'
-	    else
-	      flash.now[:alert] = 'Failed to save barcode data.'
-	      render 'show'
-	    end
+	  # Check if all barcode values are present
+	  all_values_present = barcode_values.all?(&:present?)
+	  unless all_values_present
+	    flash[:alert] = 'All barcode values must be present.'
+	    render 'show' # Adjust the redirection as needed
+	    return
+	  end
+
+	  # Build Barcode objects associated with @fa
+	  barcode_values.each do |value|
+	    @fa.barcodes.build(value: value)
+	  end
+
+	  # Save the @fa instance and all associated Barcode objects to the database
+	  if @fa.save
+	    flash[:notice] = 'Barcode data submitted successfully.'
+	    redirect_to submitted_data_fa_path(@fa)
+	  else
+	    flash.now[:alert] = 'Failed to save barcode data.'
+	    render 'show'
 	  end
 	end
+
 
 	def barcodes
 	  @fa = Fa.find(params[:id])
@@ -177,10 +215,10 @@ class FasController < ApplicationController
 	end
 
 	def graphs
-		# @barcode_data = Fa.all.pluck([:Line])
-		# @barcode_data = Barcode.group("strftime('%Y-%m-%d', created_at)").count
-		@monthly_data = Fa.group("strftime('%Y-%m', created_at)").sum(:qty)
-		@barcode_data = Barcode.group("strftime('%Y-%m-%d', created_at)").count
+		month_data = Fa.group("strftime('%Y-%m', created_at)").sum(:qty)
+		@monthly_data = month_data.transform_keys! { |key| Date.parse(key + '-01').strftime('%b') }
+		@ng_data = Barcode.where(status: "NG").group("strftime('%d-%m', created_at)").count
+		@barcode_data = Barcode.group("strftime('%d-%m', created_at)").count
 		@fa_data = Fa.includes(:barcodes).all.pluck("Model","Line")
 		@line_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Line).sum(:qty)
 		@model_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Model).sum(:qty)

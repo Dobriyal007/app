@@ -1,33 +1,52 @@
 <div class="chart-grid">
+  <h2 class="fw-bold text-center border-bottom pb-1 mb-1" style="background-color: #f0f0f0;">Failure Analysis Dashboard</h2>
   <div class="chart-container">
     <!-- <h2>Pie Chart: Line Counts</h2> -->
-    <%= pie_chart Fa.group(:Model).sum(:qty), title: "Model vs Qty", width: '50%', colors: ['#3498db', '#2ecc71', '#e74c8c'] %>
+    <%= pie_chart Fa.group(:Model).sum(:qty), title: "Model wise Qty", width: '50%', colors: ['#3498db', '#2ecc71', '#e74c8c'] %>
   </div>
 
   <div class="chart-container">
-    <!-- <h2>Bar Chart: Line Quantities</h2> -->
-    <%= bar_chart Fa.group(:Line).sum(:qty), title: "Line vs Qty", colors: ['#27ae60'], width: '50%', library: { legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle' } } %>
-
+    <%= bar_chart Fa.group(:Line).sum(:qty), xtitle: "Line", ytitle: "Qty", title: "Line wise Data", colors: ['#27ae60'], width: '50%', library: { 
+      legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle' }, 
+      plotOptions: { series: { dataLabels: { enabled: true, format: '{point.y}', style: { textOutline: false } } } },
+      yAxis: { min: 0, allowDecimals: false } # Set the minimum value of the y-axis to 10
+    } %>
   </div>
 
   <div class="chart-container">
-    <%= bar_chart @monthly_data, xtitle: "Month", ytitle: "Qty", title: "Monthly Qty", colors: ['#27ae60'], width: '50%', library: { legend: { layout: 'vertical', align: 'right', verticalAlign: 'middle', backgroundColor: "#3498db" } } %>
+    <%= bar_chart @monthly_data, xtitle: "Month", ytitle: "Qty", title: "Monthly Qty", colors: ['#27ae60'], width: '50%', library: {
+      legend: { layout: 'horizontal', align: 'right', verticalAlign: 'middle', backgroundColor: "#3498db" },
+      plotOptions: { series: { dataLabels: { enabled: true, format: '{point.y}', style: { textOutline: false } } } },
+      yAxis: { min: 10 } } %>
   </div>
 
   <div class="chart-container">
-    <!-- <h2>Line Chart: Barcode Data</h2> -->
-    <%= line_chart @barcode_data, library: {
-                  title: { text: 'Models and Total Quantity', style: { color: '#333', fontSize: '18px' } },
-                  xAxis: { labels: { style: { fontSize: '12px' } } },
-                  yAxis: { title: { text: 'Quantity', style: { fontSize: '12px' } } },
-                  legend: { enabled: true }
-                }, width: '50%' %>
+    <%= line_chart @ng_data, library: {
+                  title: { 
+                    text: 'NG Data', 
+                    style: { fontSize: '18px' }
+                  },
+                  xAxis: { title: { text: 'Date', style: { fontSize: '12px' } } },
+                  yAxis: { 
+                    title: { text: 'Qty', style: { fontSize: '12px' } },
+                    min: 1,
+                    gridLineWidth: 1, # Add grid lines for outline effect
+                    gridLineColor: '#ccc' # Set grid line color for outline effect
+                  },
+                  legend: { enabled: false },
+                  plotOptions: {
+                    series: {
+                      lineWidth: 2 # Increase line width for visibility
+                    }
+                  }
+                }, colors: ['#FF5733'], width: '50%' %>
   </div>
 
   <div class="chart-container">
     <!-- <h2>Column Chart: Line Data</h2> -->
-    <%= column_chart @barcode_data, title: "Line Data", width: '50%',
-                 library: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' } } %>
+    <%= column_chart @barcode_data, xtitle: "Date", ytitle: "Qty", title: "Day wise Data", width: '50%',
+                 library: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' },plotOptions: { series: { dataLabels: { enabled: true, format: '{point.y}', style: { textOutline: false } } } },
+      yAxis: { min: 1, allowDecimals: false } } %>
   </div>
 </div>
 
@@ -38,8 +57,5 @@
     height: 300px; /* Set the height of each container */
     margin: 10px; /* Add margin between containers */
     float: left; /* Float left to arrange containers side by side */
-    background-color: #007bff;
-  }
-  .chart-grid {
   }
 </style>
