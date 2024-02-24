@@ -137,42 +137,6 @@ class FasController < ApplicationController
 		end
 	end
 
-	# def submit_barcode_data
-	#   @fa = Fa.find(params[:format])
-	  
-	#   barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
-	  
-	#   # Check for duplicate barcode values
-	#   if barcode_values.uniq.length != barcode_values.length
-	#     flash[:alert] = 'Do not enter duplicate Barcodes.'
-	#     render 'show' # Adjust the redirection as needed
-	#     return
-	#   end
-
-	#   # Check if all barcode values are present
-	#   all_values_present = barcode_values.all?(&:present?)
-	#   unless all_values_present
-	#     flash[:alert] = 'All barcode values must be present.'
-	#     render 'show' # Adjust the redirection as needed
-	#     return
-	#   end
-
-	#   # Build Barcode objects associated with @fa
-	#   barcode_values.each do |value|
-	#     @fa.barcodes.build(value: value)
-	#   end
-
-	#   # Save the @fa instance and all associated Barcode objects to the database
-	#   if @fa.save
-	#     flash[:notice] = 'Barcode data submitted successfully.'
-	#     redirect_to submitted_data_fa_path(@fa)
-	#   else
-	#     flash.now[:alert] = 'Failed to save barcode data.'
-	#     render 'show'
-	#   end
-	# end
-
-
 	def barcodes
 	  @fa = Fa.find(params[:id])
 	  @barcodes = @fa.barcodes
@@ -199,12 +163,12 @@ class FasController < ApplicationController
 	  status = params[:status]
 	  remarks = params[:remarks]
 
-  	barcode_record = Barcode.find_by(value: barcode)
+  	barcode_record = Barcode.where(value: barcode, status: nil)
 	  if barcode_record
 	  	# Check if the status and remarks are present and not empty
 	  	# barcode_record.update(status: status.presence || barcode_record.status, remarks: remarks.presence || barcode_record.remarks)
 	    barcode_record.update(status: status, remarks: remarks)
-	    updated_at_time = barcode_record.updated_at
+	    # updated_at_time = barcode_record.updated_at
 	    flash.now[:alert] = 'Status and remarks updated successfully.'
 	  else
 	    flash.now[:alert] = 'Barcode not found.'
@@ -218,9 +182,10 @@ class FasController < ApplicationController
 		@monthly_data = month_data.transform_keys! { |key| Date.parse(key + '-01').strftime('%b') }
 		@ng_data = Barcode.where(status: "NG").group("strftime('%d-%m', created_at)").count
 		@barcode_data = Barcode.group("strftime('%d-%m', created_at)").count
+		@merged_data = @barcode_data.merge(@ng_data) { |key, ok_count, ng_count| [ok_count, ng_count] }
 		@fa_data = Fa.includes(:barcodes).all.pluck("Model","Line")
-		@line_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Line).sum(:qty)
-		@model_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Model).sum(:qty)
+		# @line_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Line).sum(:qty)
+		# @model_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Model).sum(:qty)
 	end
 
 private

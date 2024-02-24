@@ -41,28 +41,39 @@
 			            <!-- Add a hidden field for remarks -->
 			            <input type="hidden" class="remarks-field" data-barcode="<%= barcode.value %>" value="<%= barcode.remarks %>">
 			          </td>
-			          <td>
-								  <!-- Add form fields for Status and Remarks -->
-								  <%= form_tag(update_status_and_remarks_fas_path, method: :post) do %>
-								    <%= hidden_field_tag :barcode, barcode.value %>
-								    <!-- Column for Status -->
-								    <div class="form-group">
-								      <label for="status">Status</label>
-								      <%= text_field_tag :status, barcode.status, class: 'form-control', placeholder: 'Update Status', value: 'OK' %>
-								    </div>
-								  </td>
-								  <td>
-								    <!-- Column for Remarks -->
-								    <div class="form-group">
-								      <label for="remarks">Remarks</label>
-								      <%= text_field_tag :remarks, barcode.remarks, class: 'form-control', placeholder: 'Update Remarks', value: 'N/A' %>
-								    </div>
-								  </td>
-								  <td>
-								    <%= submit_tag 'Update', class: 'btn btn-primary btn-sm mt-1' %>
-								  </td>
-								  <% end %>
-								</td>
+			          <% if barcode.status.present? && barcode.remarks.present? %>
+			          	<td>
+						        <%= barcode.status %>
+						      </td>
+						      <td>
+						        <%= barcode.remarks %>
+						      </td>
+						      <td>
+						      </td>
+						    <% else %>  
+				          <td>
+									  <!-- Add form fields for Status and Remarks -->
+									  <%= form_tag(update_status_and_remarks_fas_path, method: :post, id: "update_form_#{barcode.value}") do %>
+									    <%= hidden_field_tag :barcode, barcode.value %>
+									    <!-- Column for Status -->
+									    <div class="form-group">
+									      <label for="status">Status</label>
+									      <%= text_field_tag :status, barcode.status, class: 'form-control', placeholder: 'Update Status', value: 'OK' %>
+									    </div>
+									  </td>
+									  <td>
+									    <!-- Column for Remarks -->
+									    <div class="form-group">
+									      <label for="remarks">Remarks</label>
+									      <%= text_field_tag :remarks, barcode.remarks, class: 'form-control', placeholder: 'Update Remarks', value: 'N/A' %>
+									    </div>
+									  </td>
+									  <td>
+									    <%= submit_tag 'Update', class: 'btn btn-primary btn-sm mt-1', form: "update_form_#{barcode.value}" %>
+									  </td>
+									  <% end %>
+									</td>
+								<% end %>	
 			        <% end %>
 			      <% end %>
 			    </tr>

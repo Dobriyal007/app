@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-2 filter-column mt-3">
+    <div class="col-2 filter-column mt-2">
       <div class="form-group mb-2">
         <div class="col-md-11">
           <label for="filterDateFrom">From Date:</label>
@@ -32,7 +32,15 @@
       </div>
     </div>
     <div class="col-10">
-      <h2 class="basic-head fw-bold text-center bg-primary p-3 my-3">Failure Analysis Data</h2>
+      <nav class="navbar navbar-dark bg-primary p-2 my-2 rounded">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold d-block mx-auto" style="width: max-content; font-size: 28px;">Failure Analysis Data</a>
+          <form class="d-flex">
+            <input id="barcodeSearchInput" class="form-control me-2" type="search" placeholder="Search Barcode" aria-label="Search" , autocomplete="off">
+            <button id="barcodeSearchBtn" class="btn btn-success" type="button" style="border-color: #e7e7;">Search</button>
+          </form>
+        </div>
+      </nav>
       <div class="table-container">
         <table class="table table-striped table-bordered align-middle text-center">
             <tbody>
@@ -129,27 +137,26 @@
   $(document).ready(function() {
     var initialVisibleRows = $(".table-row").toArray(); // Array to store initially visible rows
 
-    $("#filterBtn").on("click", function() {
+    $("#filterBtn, #barcodeSearchBtn").on("click", function() {
       const fromDate = new Date($("#filterDateFrom").val());
       const toDate = new Date($("#filterDateTo").val());
       const fromTime = $("#filterTimeFrom").val();
       const toTime = $("#filterTimeTo").val();
+      const searchText = $("#barcodeSearchInput").val().trim().toLowerCase();
 
       $(".table-row").each(function() {
         const rowDate = new Date($(this).find("td:eq(1)").text());
         const rowTime = $(this).find("td:eq(2)").text(); // Assuming time is in the third cell
+        const barcodeText = $(this).find("td:eq(5)").text().trim().toLowerCase(); // Assuming barcode is in the sixth cell
 
-        if (!isNaN(fromDate) && !isNaN(toDate) && !isNaN(rowDate)) {
-          const isValidDate = rowDate >= fromDate && rowDate <= toDate;
-          const isValidTime = (!fromTime || rowTime >= fromTime) && (!toTime || rowTime <= toTime);
+        const isValidDate = !isNaN(fromDate) && !isNaN(toDate) && !isNaN(rowDate) ? (rowDate >= fromDate && rowDate <= toDate) : true;
+        const isValidTime = (!fromTime || rowTime >= fromTime) && (!toTime || rowTime <= toTime);
+        const isValidBarcode = searchText === "" || barcodeText.includes(searchText);
 
-          if (isValidDate && isValidTime) {
-            $(this).show();
-          } else {
-            $(this).hide();
-          }
+        if (isValidDate && isValidTime && isValidBarcode) {
+          $(this).show();
         } else {
-          // Handle invalid dates if needed
+          $(this).hide();
         }
       });
     });
@@ -158,10 +165,11 @@
       // Show initially visible rows
       $(initialVisibleRows).show();
       // Clear input fields
-      $("#filterDateFrom, #filterDateTo, #filterTimeFrom, #filterTimeTo").val("");  
+      $("#filterDateFrom, #filterDateTo, #filterTimeFrom, #filterTimeTo, #barcodeSearchBtn").val("");  
     });
   });
 </script>
+
 <script>
     // Initialize popover for the export link
     var popover = new bootstrap.Popover(document.querySelector('.popover-dismiss'), {
