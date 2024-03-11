@@ -174,7 +174,8 @@ class FasController < ApplicationController
 	    flash.now[:alert] = 'Barcode not found.'
 	    barcode_record = []
 	  end
-	  render 'search'
+	  # render 'search'
+	  redirect_to search_fas_path(barcode: '')
 	end
 
 	def graphs

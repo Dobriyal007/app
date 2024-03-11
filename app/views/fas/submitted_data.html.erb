@@ -20,7 +20,7 @@
         </div>
         <div class="row">
           <div class="col-md-6 my-2">
-            <button id="filterBtn" class="btn btn-primary custom-btn">Filter</button>
+            <button id="filterBtn" class="btn btn-primary custom-btn" style="background: url('/filter-solid.svg') no-repeat, #198754; background-size: 20px 20px; background-position: 5px center; padding-left: 30px;">Filter</button>
           </div>
           <div class="col-md-6 my-2">
             <button id="resetBtn" class="btn btn-secondary">Reset</button>
@@ -28,7 +28,10 @@
         </div>
       </div>
       <div class="d-flex align-items-center justify-content-between mb-3">
-         <%= link_to 'Export to Excel', export_to_excel_fas_path(format: 'xlsx'), class: 'btn btn-success popover-dismiss', tabindex: '0', role: 'button', data: { bs_toggle: 'popover', bs_content: "Entire data is downloaded in Excel file.", bs_title: 'Hi', bs_trigger: 'focus' } %>
+        <%= link_to export_to_excel_fas_path(format: 'xlsx'), class: 'btn btn-success popover-dismiss', tabindex: '0', role: 'button', data: { bs_toggle: 'popover', bs_content: "Entire data is downloaded in Excel file.", bs_title: 'Hi', bs_trigger: 'focus' } do %>
+          <img src="/download.svg" alt="Download" style="height: 20px;width: 20px;">
+          Export to Excel
+        <% end %>
       </div>
     </div>
     <div class="col-10">
@@ -36,8 +39,17 @@
         <div class="container-fluid">
           <a class="navbar-brand fw-bold d-block mx-auto" style="width: max-content; font-size: 28px;">Failure Analysis Data</a>
           <form class="d-flex">
-            <input id="barcodeSearchInput" class="form-control me-2" type="search" placeholder="Search Barcode" aria-label="Search" , autocomplete="off">
-            <button id="barcodeSearchBtn" class="btn btn-success" type="button" style="border-color: #e7e7;">Search</button>
+            <div class="input-group">
+              <div style="position: relative;">
+                <input id="barcodeSearchInput" class="form-control me-2" type="search" placeholder="Search Barcode" aria-label="Search" autocomplete="off" style="padding-right: 30px;">
+                <div style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">
+                  <img src="/magnifying-glass-solid.svg" alt="Search" style="height: 20px; width: 20px;">
+                </div>
+              </div>
+              <div class="input-group-append">
+                <button id="barcodeSearchBtn" class="btn btn-success" type="button" style="border-color: #e7e7;">Search</button>
+              </div>
+            </div>
           </form>
         </div>
       </nav>
@@ -45,7 +57,7 @@
         <table class="table table-striped table-bordered align-middle text-center">
             <tbody>
               <tr>
-                <th style="width: 80px">Sr No.</th>
+                <th>Sr No.</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Line</th>
