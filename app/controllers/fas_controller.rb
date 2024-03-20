@@ -112,7 +112,6 @@ class FasController < ApplicationController
 
   def submit_barcode_data
 	  @fa = Fa.find(params[:format])
-	  
 	  barcode_values = params[:fa][:barcodes].map { |barcode| barcode[:value] }
 	  if barcode_values.uniq.length != barcode_values.length
 		  flash.now[:alert] = 'Do not enter duplicate Barcodes.'
@@ -185,8 +184,6 @@ class FasController < ApplicationController
 		@barcode_data = Barcode.group("strftime('%d-%m', created_at)").count
 		@merged_data = @barcode_data.merge(@ng_data) { |key, ok_count, ng_count| [ok_count, ng_count] }
 		@fa_data = Fa.includes(:barcodes).all.pluck("Model","Line")
-		# @line_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Line).sum(:qty)
-		# @model_chart_data = Fa.includes(:barcodes).group("DATE(barcodes.created_at)").group(:Model).sum(:qty)
 	end
 
 private

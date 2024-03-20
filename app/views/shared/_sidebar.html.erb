@@ -4,8 +4,9 @@
       <img src="/house-solid.svg" style="height: 20px;width: 30px;">
       Home
     <% end %>
-    <div class="current-info ms-auto" style="color: white; margin-right: 30px;">
+    <div class="current-info ms-auto" style="color: white;">
       <%#= Time.now.strftime("%A") %> <%#= Time.now.strftime("%H:%M") %>
+       <marquee><%= Barcode.all.where(status: nil).count %> Batteries are Pending for analysis</marquee>
     </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation" data-bs-toggle="tooltip" data-bs-placement="down" title="Menu Page">
       <span class="navbar-toggler-icon"></span>
