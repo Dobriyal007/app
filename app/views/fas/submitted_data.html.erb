@@ -33,6 +33,7 @@
           Export to Excel
         <% end %>
       </div>
+        <%= button_to 'Delete Old Records', destroy_old_fas_path, method: :delete, data: { confirm: 'Are you sure you want to delete records older than two months?' }, class: 'btn btn-danger' %>
     </div>
     <div class="col-10">
       <nav class="navbar navbar-dark bg-primary p-2 my-2 rounded">

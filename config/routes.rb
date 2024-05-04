@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     collection do
       get 'graphs'
       get 'export_excel'
+      delete 'destroy_old'
       post 'submit_barcode_data'
       post 'update_status_and_remarks'
       match 'search', via: [:get, :post]

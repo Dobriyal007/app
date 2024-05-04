@@ -186,6 +186,15 @@ class FasController < ApplicationController
 		@fa_data = Fa.includes(:barcodes).all.pluck("Model","Line")
 	end
 
+	def destroy_old
+	  Fa.older_than_two_months.destroy_all
+	  respond_to do |format|
+	    format.html { redirect_to fas_url, notice: 'Old records were successfully deleted.' }
+	    format.json { head :no_content }
+	  end
+	end
+
+
 private
 
   def fa_params
